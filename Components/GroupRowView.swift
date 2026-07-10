@@ -20,12 +20,14 @@ struct GroupRowView: View {
             .amount
     }
 
+    private var allBalances: [Balance] {
+        BalanceCalculator.balances(for: group)
+    }
+
     private var balanceText: String {
         if group.expenses.isEmpty {
             return "No expenses yet"
         }
-
-        let allBalances = BalanceCalculator.balances(for: group)
 
         if allBalances.isEmpty {
             return "Settled"
@@ -44,12 +46,32 @@ struct GroupRowView: View {
         }
     }
 
+    private var balanceBadgeColor: Color {
+        if group.expenses.isEmpty {
+            return .gray
+        }
+
+        if allBalances.isEmpty {
+            return .blue
+        }
+
+        guard let userBalance else {
+            return .orange
+        }
+
+        if userBalance > 0.01 {
+            return .green
+        } else if userBalance < -0.01 {
+            return .red
+        } else {
+            return .blue
+        }
+    }
+
     private var balanceIcon: String {
         if group.expenses.isEmpty {
             return "creditcard"
         }
-
-        let allBalances = BalanceCalculator.balances(for: group)
 
         if allBalances.isEmpty {
             return "checkmark.circle.fill"
@@ -67,15 +89,15 @@ struct GroupRowView: View {
             return "checkmark.circle.fill"
         }
     }
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 14) {
                 Image(systemName: group.icon)
                     .font(.title2)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.blue)
                     .frame(width: 48, height: 48)
-                    .background(Color.blue.gradient)
+                    .background(Color.blue.opacity(0.12))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -90,13 +112,16 @@ struct GroupRowView: View {
                 Spacer()
             }
 
-            HStack {
-                Label(balanceText, systemImage: balanceIcon)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+            Label(balanceText, systemImage: balanceIcon)
+                .font(.caption)
+                .fontWeight(.bold)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(balanceBadgeColor.opacity(0.12))
+                .foregroundColor(balanceBadgeColor)
+                .clipShape(Capsule())
 
-                Spacer()
-            }
+            Divider()
 
             HStack {
                 Text("Total Spent")
@@ -110,7 +135,7 @@ struct GroupRowView: View {
             }
 
             if !memberPreview.isEmpty {
-                HStack(spacing: -8) {
+                HStack(spacing: -12) {
                     ForEach(memberPreview) { member in
                         InitialAvatarView(name: member.name)
                             .overlay(
@@ -126,14 +151,28 @@ struct GroupRowView: View {
                             .frame(width: 36, height: 36)
                             .background(Color(.tertiarySystemBackground))
                             .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(Color(.systemBackground), lineWidth: 2)
+                            )
                     }
 
                     Spacer()
                 }
             }
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 22))
+        .padding(18)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(Color.gray.opacity(0.12), lineWidth: 1)
+        )
+        .shadow(
+            color: Color.black.opacity(0.07),
+            radius: 14,
+            x: 0,
+            y: 8
+        )
     }
 }

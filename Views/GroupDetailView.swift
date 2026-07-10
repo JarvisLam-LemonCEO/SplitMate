@@ -94,6 +94,21 @@ struct GroupDetailView: View {
                             } label: {
                                 ExpenseRowView(expense: expense)
                             }
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    deleteExpense(expense)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                            .swipeActions(edge: .leading) {
+                                NavigationLink {
+                                    EditExpenseView(group: group, expense: expense)
+                                } label: {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                .tint(.blue)
+                            }
                         }
                         .onDelete(perform: deleteExpenses)
                     }
@@ -158,6 +173,16 @@ struct GroupDetailView: View {
         }
     }
 
+    private func deleteExpense(_ expense: Expense) {
+        if let index = group.expenses.firstIndex(where: {
+            $0.persistentModelID == expense.persistentModelID
+        }) {
+            _ = withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                group.expenses.remove(at: index)
+            }
+        }
+    }
+    
     private var filteredExpenses: [Expense] {
         if searchText.trimmingCharacters(in: .whitespaces).isEmpty {
             return group.expenses
