@@ -3,9 +3,11 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+
     @State private var groups: [Group] = []
     @State private var showingSettings = false
     @State private var showingAddGroup = false
+
     @Query private var settings: [AppSettings]
 
     var body: some View {
@@ -17,6 +19,7 @@ struct ContentView: View {
                         systemImage: "person.3",
                         description: Text("Tap + to create your first split group.")
                     )
+                    .listRowBackground(Color.clear)
                 } else {
                     ForEach(groups) { group in
                         NavigationLink {
@@ -26,14 +29,19 @@ struct ContentView: View {
                                 group: group,
                                 userName: currentSettings.userName,
                                 currencyCode: currentSettings.currencyCode
-                            )                        }
+                            )
+                        }
                         .buttonStyle(.plain)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
+                        .padding(.vertical, 6)
                     }
                     .onDelete(perform: deleteGroups)
                 }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Color(.systemGroupedBackground))
             .refreshable {
                 fetchGroups()
             }
@@ -55,7 +63,6 @@ struct ContentView: View {
                     }
                 }
             }
-            
             .preferredColorScheme(colorScheme)
             .sheet(isPresented: $showingSettings) {
                 SettingsView()
@@ -70,7 +77,7 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private var currentSettings: AppSettings {
         UserSettingsHelper.currentSettings(from: modelContext)
     }
@@ -85,7 +92,7 @@ struct ContentView: View {
             return nil
         }
     }
-    
+
     private func fetchGroups() {
         let descriptor = FetchDescriptor<Group>(
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
@@ -114,5 +121,8 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [Group.self, Member.self, Expense.self], inMemory: true)
+        .modelContainer(
+            for: [Group.self, Member.self, Expense.self, AppSettings.self],
+            inMemory: true
+        )
 }

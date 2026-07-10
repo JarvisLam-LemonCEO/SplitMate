@@ -161,7 +161,7 @@ struct GroupRowView: View {
                 }
             }
         }
-        ..padding(16)
+        .padding(16)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .overlay(
