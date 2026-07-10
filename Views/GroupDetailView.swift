@@ -15,8 +15,7 @@ struct GroupDetailView: View {
 
     var body: some View {
         List {
-    
-            
+
             Section {
 
                 DashboardCardView(
@@ -68,13 +67,17 @@ struct GroupDetailView: View {
 
             Section("Members") {
                 ForEach(group.members) { member in
-                    HStack {
-                        InitialAvatarView(name: member.name)
+                    NavigationLink {
+                        EditMemberView(member: member)
+                    } label: {
+                        HStack {
+                            InitialAvatarView(name: member.name)
 
-                        Text(member.name)
-                            .font(.headline)
+                            Text(member.name)
+                                .font(.headline)
+                        }
+                        .padding(.vertical, 4)
                     }
-                    .padding(.vertical, 4)
                 }
                 .onDelete(perform: deleteMembers)
 
@@ -133,6 +136,21 @@ struct GroupDetailView: View {
                                     Label("Edit", systemImage: "pencil")
                                 }
                                 .tint(.blue)
+                            }
+                            .contextMenu {
+                                Button {
+                                    duplicateExpense(expense)
+                                } label: {
+                                    Label("Duplicate", systemImage: "doc.on.doc")
+                                }
+
+                                Divider()
+
+                                Button(role: .destructive) {
+                                    deleteExpense(expense)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
                         }
                         .onDelete(perform: deleteExpenses)
@@ -265,6 +283,36 @@ struct GroupDetailView: View {
             Haptics.warning()
         }
     }
+    
+    
+    private func duplicateExpense(_ expense: Expense) {
+        let copiedExpense = Expense(
+            title: expense.title + " Copy",
+            amount: expense.amount,
+            paidBy: expense.paidBy,
+            group: group,
+            participants: expense.participants,
+            category: expense.category,
+            subtotal: expense.subtotal,
+            tax: expense.tax,
+            tipPercentage: expense.tipPercentage,
+            splitMethod: expense.splitMethod,
+            receiptImageData: expense.receiptImageData
+        )
+
+        group.expenses.append(copiedExpense)
+
+        let activity = ActivityItem(
+            title: "Duplicated expense",
+            detail: "\(copiedExpense.title) • \(copiedExpense.amount.formatted(.currency(code: "USD")))",
+            group: group
+        )
+
+        group.activities.append(activity)
+
+        Haptics.success()
+    }
+    
     
     private var groupedExpenses: [(title: String, expenses: [Expense])] {
         let calendar = Calendar.current

@@ -16,7 +16,9 @@ struct EditExpenseView: View {
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var receiptImageData: Data?
     @State private var isScanningReceipt = false
-
+    @State private var showingReceiptViewer = false
+    
+    
     var body: some View {
         Form {
             
@@ -85,11 +87,20 @@ struct EditExpenseView: View {
             Section("Receipt") {
                 if let receiptImageData,
                    let uiImage = UIImage(data: receiptImageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxHeight: 240)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    Button {
+
+                        showingReceiptViewer = true
+
+                    } label: {
+
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 240)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 PhotosPicker(
@@ -171,7 +182,18 @@ struct EditExpenseView: View {
                 .disabled(!canSave)
             }
         }
+        .sheet(isPresented: $showingReceiptViewer) {
+
+            if let receiptImageData {
+
+                ReceiptViewer(imageData: receiptImageData)
+
+            }
+
+        }
     }
+       
+    
 
     private var canSave: Bool {
         !title.trimmingCharacters(in: .whitespaces).isEmpty &&

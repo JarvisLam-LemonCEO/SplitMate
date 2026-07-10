@@ -10,16 +10,6 @@
 		AD7219B8300052890070340B /* SplitMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AD8458783000B7EA0008D615 /* Exceptions for "Views" folder in "SplitMate" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Untitled.swift,
-			);
-			target = AD7219B7300052890070340B /* SplitMate */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AD7219BA300052890070340B /* SplitMate */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -33,9 +23,6 @@
 		};
 		AD7219C9300052C90070340B /* Views */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				AD8458783000B7EA0008D615 /* Exceptions for "Views" folder in "SplitMate" target */,
-			);
 			path = Views;
 			sourceTree = "<group>";
 		};
