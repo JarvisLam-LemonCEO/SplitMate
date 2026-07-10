@@ -8,6 +8,7 @@ struct GroupDetailView: View {
     @State private var showingAddExpense = false
     @State private var searchText = ""
     @State private var showingRestaurantSplit = false
+    @State private var shareURL: URL?
 
     private var totalSpent: Double {
         group.expenses.reduce(0) { $0 + $1.amount }
@@ -206,6 +207,19 @@ struct GroupDetailView: View {
             
             
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    shareGroupSummary()
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+        }
+        .sheet(item: $shareURL) { url in
+            ShareSheet(items: [url])
+        }
+        
         .searchable(text: $searchText, prompt: "Search expenses")
         .navigationTitle(group.name)
         .sheet(isPresented: $showingAddMember) {
