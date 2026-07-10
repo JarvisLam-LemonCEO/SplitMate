@@ -22,10 +22,11 @@ struct ContentView: View {
                         NavigationLink {
                             GroupDetailView(group: group)
                         } label: {
-                            Text(group.name)
-                                .font(.headline)
-                                .padding(.vertical, 8)
+                            GroupRowView(group: group)
                         }
+                        .buttonStyle(.plain)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
                     .onDelete(perform: deleteGroups)
                 }

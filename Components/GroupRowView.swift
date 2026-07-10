@@ -7,14 +7,19 @@ struct GroupRowView: View {
         group.expenses.reduce(0) { $0 + $1.amount }
     }
 
+    private var memberPreview: [Member] {
+        Array(group.members.prefix(3))
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Image(systemName: group.icon)
                     .font(.title2)
-                    .frame(width: 44, height: 44)
-                    .background(Color.blue.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .foregroundStyle(.white)
+                    .frame(width: 48, height: 48)
+                    .background(Color.blue.gradient)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(group.name)
@@ -29,18 +34,41 @@ struct GroupRowView: View {
             }
 
             HStack {
-                Text("Total spent")
+                Text("Total Spent")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
 
                 Spacer()
 
                 Text(totalSpent, format: .currency(code: "USD"))
-                    .fontWeight(.semibold)
+                    .font(.headline)
             }
-            .font(.subheadline)
+
+            if !memberPreview.isEmpty {
+                HStack(spacing: -8) {
+                    ForEach(memberPreview) { member in
+                        InitialAvatarView(name: member.name)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color(.systemBackground), lineWidth: 2)
+                            )
+                    }
+
+                    if group.members.count > 3 {
+                        Text("+\(group.members.count - 3)")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .frame(width: 36, height: 36)
+                            .background(Color(.tertiarySystemBackground))
+                            .clipShape(Circle())
+                    }
+
+                    Spacer()
+                }
+            }
         }
         .padding()
         .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .clipShape(RoundedRectangle(cornerRadius: 22))
     }
 }
