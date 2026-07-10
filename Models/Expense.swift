@@ -8,6 +8,11 @@ final class Expense {
     var date: Date
     var category: String = "Other"
 
+    var subtotal: Double?
+    var tax: Double?
+    var tipPercentage: Double?
+    var splitMethod: String = "Equal"
+
     var paidBy: Member?
     var group: Group?
 
@@ -24,6 +29,10 @@ final class Expense {
         group: Group?,
         participants: [Member],
         category: String = "Other",
+        subtotal: Double? = nil,
+        tax: Double? = nil,
+        tipPercentage: Double? = nil,
+        splitMethod: String = "Equal",
         receiptImageData: Data? = nil
     ) {
         self.title = title
@@ -33,6 +42,10 @@ final class Expense {
         self.group = group
         self.participants = participants
         self.category = category
+        self.subtotal = subtotal
+        self.tax = tax
+        self.tipPercentage = tipPercentage
+        self.splitMethod = splitMethod
         self.receiptImageData = receiptImageData
     }
 }

@@ -7,6 +7,7 @@ struct GroupDetailView: View {
     @State private var showingAddMember = false
     @State private var showingAddExpense = false
     @State private var searchText = ""
+    @State private var showingRestaurantSplit = false
 
     private var totalSpent: Double {
         group.expenses.reduce(0) { $0 + $1.amount }
@@ -90,7 +91,16 @@ struct GroupDetailView: View {
                 } label: {
                     Label("Add Expense", systemImage: "plus.circle.fill")
                 }
+                
+                Button {
+                    showingRestaurantSplit = true
+                } label: {
+                    Label("Add Restaurant Split", systemImage: "fork.knife")
+                }
+
             }
+            
+            
 
             if filteredExpenses.isEmpty {
                 Section("Expenses") {
@@ -185,6 +195,9 @@ struct GroupDetailView: View {
         }
         .sheet(isPresented: $showingAddExpense) {
             AddExpenseView(group: group)
+        }
+        .sheet(isPresented: $showingRestaurantSplit) {
+            AddRestaurantExpenseView(group: group)
         }
     }
     
