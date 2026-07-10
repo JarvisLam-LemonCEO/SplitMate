@@ -30,6 +30,11 @@ struct ExpenseRowView: View {
 
             Text(expense.amount, format: .currency(code: "USD"))
                 .font(.headline)
+            
+            if expense.receiptImageData != nil {
+                Image(systemName: "paperclip")
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.vertical, 6)
     }

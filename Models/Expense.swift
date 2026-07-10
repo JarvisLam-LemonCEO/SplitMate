@@ -14,13 +14,17 @@ final class Expense {
     @Relationship
     var participants: [Member] = []
 
+    @Attribute(.externalStorage)
+    var receiptImageData: Data?
+
     init(
         title: String,
         amount: Double,
         paidBy: Member?,
         group: Group?,
         participants: [Member],
-        category: String = "Other"
+        category: String = "Other",
+        receiptImageData: Data? = nil
     ) {
         self.title = title
         self.amount = amount
@@ -29,5 +33,6 @@ final class Expense {
         self.group = group
         self.participants = participants
         self.category = category
+        self.receiptImageData = receiptImageData
     }
 }
