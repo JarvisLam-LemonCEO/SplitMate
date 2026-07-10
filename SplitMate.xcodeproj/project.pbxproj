@@ -8,24 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		AD8458A63000E2E70008D615 /* ShareSheet.txt in Resources */ = {isa = PBXBuildFile; fileRef = AD8458A53000E2E70008D615 /* ShareSheet.txt */; };
-		AD8458AD3000E2F70008D615 /* Untitled.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD8458AC3000E2F70008D615 /* Untitled.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AD7219B8300052890070340B /* SplitMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SplitMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD8458A53000E2E70008D615 /* ShareSheet.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShareSheet.txt; sourceTree = "<group>"; };
-		AD8458AC3000E2F70008D615 /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AD8458A13000E2B10008D615 /* Exceptions for "Services" folder in "SplitMate" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Untitled.swift,
-			);
-			target = AD7219B7300052890070340B /* SplitMate */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AD7219BA300052890070340B /* SplitMate */ = {
@@ -50,9 +38,6 @@
 		};
 		AD7219CB300052DC0070340B /* Services */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				AD8458A13000E2B10008D615 /* Exceptions for "Services" folder in "SplitMate" target */,
-			);
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -91,7 +76,6 @@
 				AD7219BA300052890070340B /* SplitMate */,
 				AD7219B9300052890070340B /* Products */,
 				AD8458A53000E2E70008D615 /* ShareSheet.txt */,
-				AD8458AC3000E2F70008D615 /* Untitled.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -184,7 +168,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD8458AD3000E2F70008D615 /* Untitled.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,6 +8,7 @@ struct SettingsView: View {
     @State private var userName = ""
     @State private var currencyCode = "USD"
     @State private var appearance = "System"
+    @State private var hapticsEnabled = true
     
     let appearances = ["System", "Light", "Dark"]
     let currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "AUD", "HKD"]
@@ -25,6 +26,10 @@ struct SettingsView: View {
                             Text(mode).tag(mode)
                         }
                     }
+                }
+                
+                Section("Feedback") {
+                    Toggle("Enable Haptics", isOn: $hapticsEnabled)
                 }
 
                 Section("Currency") {
@@ -57,10 +62,12 @@ struct SettingsView: View {
             userName = settings.userName
             appearance = settings.appearance
             currencyCode = settings.currencyCode
+            hapticsEnabled = settings.hapticsEnabled
         } else {
             userName = "You"
             currencyCode = "USD"
             appearance = "System"
+            hapticsEnabled = true
         }
     }
 
@@ -71,11 +78,13 @@ struct SettingsView: View {
             settings.userName = userName
             settings.appearance = appearance
             settings.currencyCode = currencyCode
+            settings.hapticsEnabled = hapticsEnabled
         } else {
             let settings = AppSettings(
                 userName: userName,
                 currencyCode: currencyCode,
-                appearance: appearance
+                appearance: appearance,
+                hapticsEnabled: hapticsEnabled
             )
             modelContext.insert(settings)
         }
