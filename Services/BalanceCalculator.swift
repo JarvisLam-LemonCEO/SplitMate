@@ -2,7 +2,10 @@ import Foundation
 import SwiftData
 
 struct Settlement: Identifiable {
-    let id = UUID()
+    var id: String {
+        "\(from.persistentModelID)-\(to.persistentModelID)-\(amount)"
+    }
+
     let from: Member
     let to: Member
     let amount: Double

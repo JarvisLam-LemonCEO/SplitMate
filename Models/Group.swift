@@ -15,6 +15,9 @@ final class Group {
     
     @Relationship(deleteRule: .cascade, inverse: \ActivityItem.group)
     var activities: [ActivityItem] = []
+    
+    @Relationship(deleteRule: .cascade, inverse: \Payment.group)
+    var payments: [Payment] = []
 
     init(name: String, icon: String = "person.3.fill") {
         self.name = name

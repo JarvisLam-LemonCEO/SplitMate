@@ -12,7 +12,8 @@ struct SplitMateApp: App {
             Member.self,
             Expense.self,
             AppSettings.self,
-            ActivityItem.self
+            ActivityItem.self,
+            Payment.self
         ])
     }
 }
