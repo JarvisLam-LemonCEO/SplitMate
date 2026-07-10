@@ -114,6 +114,8 @@ struct AddExpenseView: View {
         )
 
         group.expenses.append(expense)
+        
+        Haptics.success()
        
         let activity = ActivityItem(
             title: "Added expense",

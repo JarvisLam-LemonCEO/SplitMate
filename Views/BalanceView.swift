@@ -104,6 +104,7 @@ struct BalanceView: View {
         )
 
         group.payments.append(payment)
+        Haptics.success()
     }
 
     private func deletePayments(at offsets: IndexSet) {
@@ -116,6 +117,7 @@ struct BalanceView: View {
                 $0.persistentModelID == payment.persistentModelID
             }) {
                 group.payments.remove(at: originalIndex)
+                Haptics.warning()
             }
         }
     }

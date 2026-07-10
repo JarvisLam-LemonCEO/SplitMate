@@ -172,16 +172,6 @@ struct GroupDetailView: View {
             AddExpenseView(group: group)
         }
     }
-
-    private func deleteExpense(_ expense: Expense) {
-        if let index = group.expenses.firstIndex(where: {
-            $0.persistentModelID == expense.persistentModelID
-        }) {
-            _ = withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                group.expenses.remove(at: index)
-            }
-        }
-    }
     
     private var filteredExpenses: [Expense] {
         if searchText.trimmingCharacters(in: .whitespaces).isEmpty {
@@ -205,6 +195,17 @@ struct GroupDetailView: View {
         GroupStatsCalculator.stats(for: group, userName: settings.userName)
     }
     
+    private func deleteExpense(_ expense: Expense) {
+        if let index = group.expenses.firstIndex(where: {
+            $0.persistentModelID == expense.persistentModelID
+        }) {
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                group.expenses.remove(at: index)
+                Haptics.warning()
+            }
+        }
+    }
+    
     private func deleteExpenses(at offsets: IndexSet) {
         for index in offsets {
             let expense = filteredExpenses[index]
@@ -213,6 +214,7 @@ struct GroupDetailView: View {
                 $0.persistentModelID == expense.persistentModelID
             }) {
                 group.expenses.remove(at: originalIndex)
+                Haptics.warning()
             }
         }
     }
@@ -232,6 +234,7 @@ struct GroupDetailView: View {
             }
 
             group.members.remove(at: index)
+            Haptics.warning()
         }
     }
     

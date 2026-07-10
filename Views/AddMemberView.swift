@@ -40,6 +40,7 @@ struct AddMemberView: View {
                         member.group = group
 
                         group.members.append(member)
+                        Haptics.success()
 
                         dismiss()
 
