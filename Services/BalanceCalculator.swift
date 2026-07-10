@@ -47,6 +47,18 @@ struct BalanceCalculator {
                 totals[participant.persistentModelID, default: (participant, 0)].amount -= share
             }
         }
+        
+        
+        // Process settled payments
+        for payment in group.payments {
+            guard
+                let fromMember = group.members.first(where: { $0.name == payment.fromName }),
+                let toMember = group.members.first(where: { $0.name == payment.toName })
+            else { continue }
+
+            totals[fromMember.persistentModelID, default: (fromMember, 0)].amount += payment.amount
+            totals[toMember.persistentModelID, default: (toMember, 0)].amount -= payment.amount
+        }
 
         return totals.values
             .map { Balance(member: $0.member, amount: rounded($0.amount)) }

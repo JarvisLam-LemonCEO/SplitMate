@@ -22,14 +22,20 @@ struct ContentView: View {
                         NavigationLink {
                             GroupDetailView(group: group)
                         } label: {
-                            GroupRowView(group: group)
-                        }
+                            GroupRowView(
+                                group: group,
+                                userName: currentSettings.userName,
+                                currencyCode: currentSettings.currencyCode
+                            )                        }
                         .buttonStyle(.plain)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                     }
                     .onDelete(perform: deleteGroups)
                 }
+            }
+            .refreshable {
+                fetchGroups()
             }
             .navigationTitle("SplitMate")
             .toolbar {
@@ -63,6 +69,10 @@ struct ContentView: View {
                 fetchGroups()
             }
         }
+    }
+    
+    private var currentSettings: AppSettings {
+        UserSettingsHelper.currentSettings(from: modelContext)
     }
 
     private var colorScheme: ColorScheme? {

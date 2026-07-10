@@ -14,14 +14,17 @@ struct GroupStatsCalculator {
         let totalSpent = group.expenses.reduce(0) { $0 + $1.amount }
 
         let youPaid = group.expenses.reduce(0) { total, expense in
-            if expense.paidBy?.name == userName {
+            if expense.paidBy?.name.lowercased() == userName.lowercased() {
                 return total + expense.amount
             }
             return total
         }
 
         let balances = BalanceCalculator.balances(for: group)
-        let yourBalance = balances.first { $0.member.name == userName }?.amount ?? 0
+
+        let yourBalance = balances.first {
+            $0.member.name.lowercased() == userName.lowercased()
+        }?.amount ?? 0
 
         return GroupStats(
             totalSpent: totalSpent,

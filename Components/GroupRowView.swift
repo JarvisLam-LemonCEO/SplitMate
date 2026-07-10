@@ -1,7 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct GroupRowView: View {
     let group: Group
+    let userName: String
+    let currencyCode: String
 
     private var totalSpent: Double {
         group.expenses.reduce(0) { $0 + $1.amount }
@@ -11,6 +14,60 @@ struct GroupRowView: View {
         Array(group.members.prefix(3))
     }
 
+    private var userBalance: Double? {
+        BalanceCalculator.balances(for: group)
+            .first { $0.member.name.lowercased() == userName.lowercased() }?
+            .amount
+    }
+
+    private var balanceText: String {
+        if group.expenses.isEmpty {
+            return "No expenses yet"
+        }
+
+        let allBalances = BalanceCalculator.balances(for: group)
+
+        if allBalances.isEmpty {
+            return "Settled"
+        }
+
+        guard let userBalance else {
+            return "Add yourself as a member"
+        }
+
+        if userBalance > 0.01 {
+            return "You are owed \(userBalance.formatted(.currency(code: currencyCode)))"
+        } else if userBalance < -0.01 {
+            return "You owe \(abs(userBalance).formatted(.currency(code: currencyCode)))"
+        } else {
+            return "Settled"
+        }
+    }
+
+    private var balanceIcon: String {
+        if group.expenses.isEmpty {
+            return "creditcard"
+        }
+
+        let allBalances = BalanceCalculator.balances(for: group)
+
+        if allBalances.isEmpty {
+            return "checkmark.circle.fill"
+        }
+
+        guard let userBalance else {
+            return "person.crop.circle.badge.exclamationmark"
+        }
+
+        if userBalance > 0.01 {
+            return "arrow.down.circle.fill"
+        } else if userBalance < -0.01 {
+            return "arrow.up.circle.fill"
+        } else {
+            return "checkmark.circle.fill"
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
@@ -34,13 +91,21 @@ struct GroupRowView: View {
             }
 
             HStack {
+                Label(balanceText, systemImage: balanceIcon)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                Spacer()
+            }
+
+            HStack {
                 Text("Total Spent")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
                 Spacer()
 
-                Text(totalSpent, format: .currency(code: "USD"))
+                Text(totalSpent, format: .currency(code: currencyCode))
                     .font(.headline)
             }
 
