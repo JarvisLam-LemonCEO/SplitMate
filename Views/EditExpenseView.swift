@@ -95,5 +95,13 @@ struct EditExpenseView: View {
         }
 
         dismiss()
+        
+        let activity = ActivityItem(
+            title: "Edited expense",
+            detail: "\(title) • \(amountValue.formatted(.currency(code: "USD")))",
+            group: group
+        )
+
+        group.activities.append(activity)
     }
 }

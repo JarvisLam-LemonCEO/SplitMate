@@ -123,6 +123,29 @@ struct GroupDetailView: View {
 
             }
             
+            Section("Recent Activity") {
+                if group.activities.isEmpty {
+                    Text("No recent activity")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(group.activities.sorted { $0.date > $1.date }.prefix(5)) { activity in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(activity.title)
+                                .font(.headline)
+
+                            Text(activity.detail)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+
+                            Text(activity.date, style: .relative)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+            }
+            
             
         }
         .searchable(text: $searchText, prompt: "Search expenses")

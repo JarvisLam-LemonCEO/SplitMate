@@ -114,6 +114,14 @@ struct AddExpenseView: View {
         )
 
         group.expenses.append(expense)
+       
+        let activity = ActivityItem(
+            title: "Added expense",
+            detail: "\(title) • \(amountValue.formatted(.currency(code: "USD")))",
+            group: group
+        )
+
+        group.activities.append(activity)
 
         dismiss()
     }
