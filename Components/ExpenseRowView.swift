@@ -4,18 +4,26 @@ struct ExpenseRowView: View {
     let expense: Expense
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Image(systemName: ExpenseCategory.icon(for: expense.category))
                 .font(.title2)
-                .frame(width: 36)
+                .frame(width: 36, height: 36)
+                .background(Color.blue.opacity(0.15))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(expense.title)
                     .font(.headline)
 
-                Text("\(expense.category) • Paid by \(expense.paidBy?.name ?? "Unknown")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Text(expense.category)
+
+                    Text("•")
+
+                    Text("Paid by \(expense.paidBy?.name ?? "Unknown")")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
 
             Spacer()

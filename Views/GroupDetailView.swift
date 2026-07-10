@@ -52,7 +52,13 @@ struct GroupDetailView: View {
 
             Section("Members") {
                 ForEach(group.members) { member in
-                    Label(member.name, systemImage: "person.fill")
+                    HStack {
+                        InitialAvatarView(name: member.name)
+
+                        Text(member.name)
+                            .font(.headline)
+                    }
+                    .padding(.vertical, 4)
                 }
                 .onDelete(perform: deleteMembers)
 
