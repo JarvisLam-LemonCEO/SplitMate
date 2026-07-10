@@ -14,24 +14,38 @@ struct GroupDetailView: View {
 
     var body: some View {
         List {
+    
+            
             Section {
-                VStack(spacing: 12) {
-                    DashboardCardView(
-                        title: "Total Spent",
-                        value: stats.totalSpent.formatted(.currency(code: settings.currencyCode)),
-                        icon: "dollarsign.circle.fill"
-                    )
 
+                DashboardCardView(
+                    title: "Total Spent",
+                    value: stats.totalSpent.formatted(.currency(code: settings.currencyCode)),
+                    icon: "dollarsign.circle.fill"
+                )
+
+                HStack(spacing: 12) {
                     DashboardCardView(
                         title: "You Paid",
                         value: stats.youPaid.formatted(.currency(code: settings.currencyCode)),
                         icon: "person.crop.circle.fill.badge.checkmark"
+                        
                     )
 
+                    DashboardCardView(
+                        title: "Members",
+                        value: "\(stats.memberCount)",
+                        icon: "person.2.fill"
+                        
+                    )
+                }
+
+                HStack(spacing: 12) {
                     DashboardCardView(
                         title: "You Owe",
                         value: stats.youOwe.formatted(.currency(code: settings.currencyCode)),
                         icon: "arrow.up.circle.fill"
+                        
                     )
 
                     DashboardCardView(
@@ -39,16 +53,17 @@ struct GroupDetailView: View {
                         value: stats.youAreOwed.formatted(.currency(code: settings.currencyCode)),
                         icon: "arrow.down.circle.fill"
                     )
-
-                    DashboardCardView(
-                        title: "Members / Expenses",
-                        value: "\(stats.memberCount) members • \(stats.expenseCount) expenses",
-                        icon: "person.2.fill"
-                    )
                 }
-                .padding(.vertical, 4)
+
+                DashboardCardView(
+                    title: "Expenses",
+                    value: "\(stats.expenseCount)",
+                    icon: "creditcard.fill"
+                )
+
             }
             .listRowBackground(Color.clear)
+            
 
             Section("Members") {
                 ForEach(group.members) { member in
