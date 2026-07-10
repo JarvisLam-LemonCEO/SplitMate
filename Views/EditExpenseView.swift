@@ -19,6 +19,53 @@ struct EditExpenseView: View {
 
     var body: some View {
         Form {
+            
+            if let subtotal = expense.subtotal,
+               let tax = expense.tax,
+               let tipPercentage = expense.tipPercentage {
+
+                Section("Restaurant Summary") {
+                    HStack {
+                        Text("Subtotal")
+                        Spacer()
+                        Text(subtotal, format: .currency(code: "USD"))
+                    }
+
+                    HStack {
+                        Text("Tax")
+                        Spacer()
+                        Text(tax, format: .currency(code: "USD"))
+                    }
+
+                    HStack {
+                        Text("Tip")
+                        Spacer()
+                        Text("\(Int(tipPercentage))%")
+                    }
+
+                    HStack {
+                        Text("Total")
+                        Spacer()
+                        Text(expense.amount, format: .currency(code: "USD"))
+                            .fontWeight(.bold)
+                    }
+
+                    HStack {
+                        Text("Per Person")
+                        Spacer()
+                        Text(
+                            RestaurantSplitCalculator.perPerson(
+                                total: expense.amount,
+                                peopleCount: expense.participants.count
+                            ),
+                            format: .currency(code: "USD")
+                        )
+                        .fontWeight(.bold)
+                    }
+                }
+            }
+            
+            
             Section("Expense") {
                 TextField("Title", text: $title)
 
