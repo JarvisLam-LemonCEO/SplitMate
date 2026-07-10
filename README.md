@@ -3,6 +3,9 @@
 SplitMate is a modern iOS expense-splitting app built with **SwiftUI** and **SwiftData**. It helps groups of friends, roommates, classmates, or travelers track shared expenses and calculate who owes whom.
 
 ---
+## 🎥 Demo
+
+[▶️ Watch the Demo on YouTube](https://youtube.com/shorts/fdYv3hW-ohM?feature=share)
 
 ## 📱 Screenshots
 
