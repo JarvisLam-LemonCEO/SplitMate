@@ -3,22 +3,66 @@ import SwiftData
 
 struct GroupDetailView: View {
     @Bindable var group: Group
+
     @Environment(\.modelContext) private var modelContext
+
     @State private var showingAddMember = false
     @State private var showingAddExpense = false
-    @State private var searchText = ""
     @State private var showingRestaurantSplit = false
-    @State private var shareURL: URL?
+    @State private var searchText = ""
+    @State private var shareItem: ShareItem?
 
-    private var totalSpent: Double {
-        group.expenses.reduce(0) { $0 + $1.amount }
+    private var settings: AppSettings {
+        UserSettingsHelper.currentSettings(from: modelContext)
+    }
+
+    private var stats: GroupStats {
+        GroupStatsCalculator.stats(for: group, userName: settings.userName)
+    }
+
+    private var filteredExpenses: [Expense] {
+        if searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+            return group.expenses
+        }
+
+        let query = searchText.lowercased()
+
+        return group.expenses.filter { expense in
+            expense.title.lowercased().contains(query) ||
+            expense.category.lowercased().contains(query) ||
+            (expense.paidBy?.name.lowercased().contains(query) ?? false)
+        }
+    }
+
+    private var groupedExpenses: [(title: String, expenses: [Expense])] {
+        let calendar = Calendar.current
+
+        let sortedExpenses = filteredExpenses.sorted {
+            $0.date > $1.date
+        }
+
+        let groups = Dictionary(grouping: sortedExpenses) { expense in
+            if calendar.isDateInToday(expense.date) {
+                return "Today"
+            } else if calendar.isDateInYesterday(expense.date) {
+                return "Yesterday"
+            } else {
+                return expense.date.formatted(date: .abbreviated, time: .omitted)
+            }
+        }
+
+        return groups
+            .map { (title: $0.key, expenses: $0.value) }
+            .sorted {
+                let firstDate = $0.expenses.first?.date ?? .distantPast
+                let secondDate = $1.expenses.first?.date ?? .distantPast
+                return firstDate > secondDate
+            }
     }
 
     var body: some View {
         List {
-
             Section {
-
                 DashboardCardView(
                     title: "Total Spent",
                     value: stats.totalSpent.formatted(.currency(code: settings.currencyCode)),
@@ -30,14 +74,12 @@ struct GroupDetailView: View {
                         title: "You Paid",
                         value: stats.youPaid.formatted(.currency(code: settings.currencyCode)),
                         icon: "person.crop.circle.fill.badge.checkmark"
-                        
                     )
 
                     DashboardCardView(
                         title: "Members",
                         value: "\(stats.memberCount)",
                         icon: "person.2.fill"
-                        
                     )
                 }
 
@@ -46,7 +88,6 @@ struct GroupDetailView: View {
                         title: "You Owe",
                         value: stats.youOwe.formatted(.currency(code: settings.currencyCode)),
                         icon: "arrow.up.circle.fill"
-                        
                     )
 
                     DashboardCardView(
@@ -61,10 +102,8 @@ struct GroupDetailView: View {
                     value: "\(stats.expenseCount)",
                     icon: "creditcard.fill"
                 )
-
             }
             .listRowBackground(Color.clear)
-            
 
             Section("Members") {
                 ForEach(group.members) { member in
@@ -95,16 +134,13 @@ struct GroupDetailView: View {
                 } label: {
                     Label("Add Expense", systemImage: "plus.circle.fill")
                 }
-                
+
                 Button {
                     showingRestaurantSplit = true
                 } label: {
                     Label("Add Restaurant Split", systemImage: "fork.knife")
                 }
-
             }
-            
-            
 
             if filteredExpenses.isEmpty {
                 Section("Expenses") {
@@ -160,28 +196,19 @@ struct GroupDetailView: View {
             }
 
             Section {
-                NavigationLink("View Balances") {
+                NavigationLink {
                     BalanceView(group: group)
+                } label: {
+                    Label("View Balances", systemImage: "arrow.left.arrow.right")
                 }
-            }
-            
-            Section {
 
                 NavigationLink {
-
                     StatisticsView(group: group)
-
                 } label: {
-
-                    Label(
-                        "Statistics",
-                        systemImage: "chart.bar.fill"
-                    )
-
+                    Label("Statistics", systemImage: "chart.bar.fill")
                 }
-
             }
-            
+
             Section("Recent Activity") {
                 if group.activities.isEmpty {
                     Text("No recent activity")
@@ -204,9 +231,9 @@ struct GroupDetailView: View {
                     }
                 }
             }
-            
-            
         }
+        .searchable(text: $searchText, prompt: "Search expenses")
+        .navigationTitle(group.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -216,12 +243,6 @@ struct GroupDetailView: View {
                 }
             }
         }
-        .sheet(item: $shareURL) { url in
-            ShareSheet(items: [url])
-        }
-        
-        .searchable(text: $searchText, prompt: "Search expenses")
-        .navigationTitle(group.name)
         .sheet(isPresented: $showingAddMember) {
             AddMemberView(group: group)
         }
@@ -231,30 +252,26 @@ struct GroupDetailView: View {
         .sheet(isPresented: $showingRestaurantSplit) {
             AddRestaurantExpenseView(group: group)
         }
-    }
-    
-    private var filteredExpenses: [Expense] {
-        if searchText.trimmingCharacters(in: .whitespaces).isEmpty {
-            return group.expenses
-        }
-
-        let query = searchText.lowercased()
-
-        return group.expenses.filter { expense in
-            expense.title.lowercased().contains(query) ||
-            expense.category.lowercased().contains(query) ||
-            (expense.paidBy?.name.lowercased().contains(query) ?? false)
+        .sheet(item: $shareItem) { item in
+            ShareSheet(items: [item.url])
         }
     }
-    
-    private var settings: AppSettings {
-        UserSettingsHelper.currentSettings(from: modelContext)
+
+    private func shareGroupSummary() {
+        let pdfView = GroupSummaryPDFView(
+            group: group,
+            currencyCode: settings.currencyCode
+        )
+
+        if let url = PDFRenderer.render(
+            pdfView,
+            fileName: "\(group.name)-summary.pdf"
+        ) {
+            shareItem = ShareItem(url: url)
+            Haptics.success()
+        }
     }
 
-    private var stats: GroupStats {
-        GroupStatsCalculator.stats(for: group, userName: settings.userName)
-    }
-    
     private func deleteExpense(_ expense: Expense) {
         if let index = group.expenses.firstIndex(where: {
             $0.persistentModelID == expense.persistentModelID
@@ -265,7 +282,7 @@ struct GroupDetailView: View {
             }
         }
     }
-    
+
     private func deleteExpenses(at offsets: IndexSet) {
         for index in offsets {
             let expense = filteredExpenses[index]
@@ -278,7 +295,7 @@ struct GroupDetailView: View {
             }
         }
     }
-    
+
     private func deleteMembers(at offsets: IndexSet) {
         for index in offsets {
             let member = group.members[index]
@@ -297,8 +314,7 @@ struct GroupDetailView: View {
             Haptics.warning()
         }
     }
-    
-    
+
     private func duplicateExpense(_ expense: Expense) {
         let copiedExpense = Expense(
             title: expense.title + " Copy",
@@ -318,39 +334,12 @@ struct GroupDetailView: View {
 
         let activity = ActivityItem(
             title: "Duplicated expense",
-            detail: "\(copiedExpense.title) • \(copiedExpense.amount.formatted(.currency(code: "USD")))",
+            detail: "\(copiedExpense.title) • \(copiedExpense.amount.formatted(.currency(code: settings.currencyCode)))",
             group: group
         )
 
         group.activities.append(activity)
-
         Haptics.success()
     }
     
-    
-    private var groupedExpenses: [(title: String, expenses: [Expense])] {
-        let calendar = Calendar.current
-
-        let sortedExpenses = filteredExpenses.sorted {
-            $0.date > $1.date
-        }
-
-        let groups = Dictionary(grouping: sortedExpenses) { expense in
-            if calendar.isDateInToday(expense.date) {
-                return "Today"
-            } else if calendar.isDateInYesterday(expense.date) {
-                return "Yesterday"
-            } else {
-                return expense.date.formatted(date: .abbreviated, time: .omitted)
-            }
-        }
-
-        return groups
-            .map { (title: $0.key, expenses: $0.value) }
-            .sorted {
-                let firstDate = $0.expenses.first?.date ?? .distantPast
-                let secondDate = $1.expenses.first?.date ?? .distantPast
-                return firstDate > secondDate
-            }
-    }
 }

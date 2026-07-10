@@ -161,18 +161,12 @@ struct GroupRowView: View {
                 }
             }
         }
-        .padding(18)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        ..padding(16)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
         .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.gray.opacity(0.12), lineWidth: 1)
-        )
-        .shadow(
-            color: Color.black.opacity(0.07),
-            radius: 14,
-            x: 0,
-            y: 8
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color(.separator).opacity(0.35), lineWidth: 1)
         )
     }
 }
