@@ -15,6 +15,7 @@ struct EditExpenseView: View {
     @State private var category = "Food"
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var receiptImageData: Data?
+    @State private var isScanningReceipt = false
 
     var body: some View {
         Form {
@@ -49,6 +50,18 @@ struct EditExpenseView: View {
                     matching: .images
                 ) {
                     Label("Choose Receipt Photo", systemImage: "photo")
+                }
+                
+                if receiptImageData != nil {
+                    Button {
+                        scanReceipt()
+                    } label: {
+                        if isScanningReceipt {
+                            ProgressView()
+                        } else {
+                            Label("Scan Receipt", systemImage: "text.viewfinder")
+                        }
+                    }
                 }
 
                 if receiptImageData != nil {
@@ -142,5 +155,25 @@ struct EditExpenseView: View {
         )
 
         group.activities.append(activity)
+    }
+    
+    private func scanReceipt() {
+        guard let receiptImageData else { return }
+
+        isScanningReceipt = true
+
+        Task {
+            let result = await ReceiptOCRService.scan(imageData: receiptImageData)
+
+            if let merchant = result.merchant, !merchant.isEmpty {
+                title = merchant
+            }
+
+            if let total = result.total {
+                amount = String(format: "%.2f", total)
+            }
+
+            isScanningReceipt = false
+        }
     }
 }
