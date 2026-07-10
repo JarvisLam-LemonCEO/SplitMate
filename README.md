@@ -8,9 +8,11 @@ SplitMate is a modern iOS expense-splitting app built with **SwiftUI** and **Swi
 
 > Add screenshots of your app here.
 
-| Home | Group | Settle Up |
-|------|-------|-----------|
-| *(Screenshot)* | *(Screenshot)* | *(Screenshot)* |
+## 📱 Screenshots
+
+| Home | Group | Add Expense | Settle Up |
+|------|------|------|------|
+| ![](Screenshots/Home.png) | ![](Screenshots/Group.png) | ![](Screenshots/AddExpense.png) | ![](Screenshots/SettleUp.png) |
 
 ---
 
