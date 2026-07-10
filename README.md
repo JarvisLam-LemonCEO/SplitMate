@@ -6,9 +6,11 @@ SplitMate is a modern iOS expense-splitting app built with **SwiftUI** and **Swi
 
 ## 📱 Screenshots
 
-| Home | Group | Add Expense | Settle Up |
-|------|------|------|------|
-| ![](Screenshots/Home.png) | ![](Screenshots/Group.png) | ![](Screenshots/AddExpense.png) | ![](Screenshots/SettleUp.png) |
+| Home | Group Dashboard | Add Expense | Restaurant Split |
+|------|-----------------|-------------|------|
+| ![](Screenshots/Home.png) | ![](Screenshots/Group.png) | ![](Screenshots/AddExpense.png) | ![](Screenshots/RestaurantSplit.png) |
+| Settle Up | Statistics |
+| ![](Screenshots/SettleUp.png) | ![](Screenshots/Stats.png) |
 
 ---
 
@@ -21,19 +23,25 @@ SplitMate is a modern iOS expense-splitting app built with **SwiftUI** and **Swi
   - Total spent
   - Number of members
   - Number of expenses
+- Beautiful dashboard cards
+- Dark Mode support
+
 
 ### Members
 - Add members
-- Remove members with swipe-to-delete
-- Automatically updates balances after member removal
+- Rename members
+- Delete members
+- Initial avatar generation
+- Automatic balance updates after member removal
+
 
 ### Expenses
 - Add expenses
 - Edit expenses
 - Delete expenses
-- Select who paid
-- Choose participants
-- Expense categories:
+- Duplicate expenses
+- Expense search
+- Expense categories
   - 🍕 Food
   - 🚗 Transport
   - 🏨 Hotel
@@ -41,10 +49,68 @@ SplitMate is a modern iOS expense-splitting app built with **SwiftUI** and **Swi
   - 🎉 Entertainment
   - 📦 Other
 
+### Restaurant Split
+Restaurant mode includes:
+- Subtotal
+- Tax
+- Tip percentage
+- Automatic total calculation
+- Equal split
+- Cost per person
+
+### Receipt Management
+- Attach receipt images
+- Full-screen receipt viewer
+- Zoomable receipt preview
+- Receipt OCR (Vision Framework)
+
 ### Balance Calculation
 - Automatically calculates balances
 - Generates simplified **"Who Owes Whom"** settlements
 - Ignores deleted members safely
+- Net balances
+- Settle-up suggestions
+
+Example:
+
+```
+Pizza     $90
+Paid by Tom
+
+Participants:
+Tom
+Alex
+Sarah
+
+Result
+
+Alex → Tom      $30
+
+Sarah → Tom     $30
+```
+
+### Payments
+- Mark as Paid
+- Undo payments
+- Payment history
+- Automatic balance recalculation
+
+###Statistics
+Built with **Swift Charts**
+- Spending by category
+- Total spent
+- Number of expenses
+- Number of members
+
+
+### Dashboard
+Each group includes:
+- Total spent
+- You paid
+- You owe
+- You are owed
+- Expense count
+- Member count
 
 ### Settings
 - User profile
@@ -53,19 +119,37 @@ SplitMate is a modern iOS expense-splitting app built with **SwiftUI** and **Swi
 - Dark Mode
 - System Appearance
 
+
+### Share
+Generate and share a beautiful PDF summary containing:
+- Group information
+- Expenses
+- Total spent
+- Settlement summary
+
+Perfect for:
+- Messages
+- AirDrop
+- Email
+- WhatsApp
+
 ---
 
-## 🛠 Built With
-
+## Built With
 - Swift 6
 - SwiftUI
 - SwiftData
+- Swift Charts
+- Vision Framework
+- PDFKit
+- PhotosUI
+- UIKit (Haptics)
 - Xcode 16
 - iOS 18+
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 SplitMate
@@ -77,6 +161,8 @@ SplitMate
 │   ├── Group.swift
 │   ├── Member.swift
 │   ├── Expense.swift
+│   ├── Payment.swift
+│   ├── ActivityItem.swift
 │   └── AppSettings.swift
 │
 ├── Views
@@ -84,19 +170,34 @@ SplitMate
 │   ├── GroupDetailView.swift
 │   ├── AddGroupView.swift
 │   ├── AddMemberView.swift
+│   ├── EditMemberView.swift
 │   ├── AddExpenseView.swift
 │   ├── EditExpenseView.swift
+│   ├── AddRestaurantExpenseView.swift
 │   ├── BalanceView.swift
+│   ├── StatisticsView.swift
+│   ├── ReceiptViewer.swift
+│   ├── GroupSummaryPDFView.swift
 │   └── SettingsView.swift
 │
 ├── Components
+│   ├── GroupRowView.swift
 │   ├── DashboardCardView.swift
+│   ├── InitialAvatarView.swift
 │   ├── ExpenseRowView.swift
-│   └── GroupRowView.swift
+│   ├── ZoomableScrollView.swift
+│   └── ShareSheet.swift
 │
 ├── Services
 │   ├── BalanceCalculator.swift
-│   └── ExpenseCategory.swift
+│   ├── GroupStatsCalculator.swift
+│   ├── RestaurantSplitCalculator.swift
+│   ├── ReceiptOCRService.swift
+│   ├── PDFRenderer.swift
+│   ├── ExpenseStatistics.swift
+│   ├── ExpenseCategory.swift
+│   ├── UserSettingsHelper.swift
+│   └── Haptics.swift
 │
 └── Assets
 ```
@@ -160,22 +261,24 @@ Charlie → Alice  $30
 
 ---
 
-## 🎯 Future Features
-
-- CloudKit Sync
+##  Future Features
+- CloudKit sync
 - Sign in with Apple
-- Invite Friends
-- Receipt Scanner (Vision OCR)
-- Swift Charts
+- Shared groups
+- Push notifications
 - Widgets
+- Apple Watch app
 - Live Activities
-- Multiple Currencies
-- Push Notifications
-- Apple Watch App
+- Multi-language support
+- Expense recurrence
+- Budget tracking
+- AI expense categorization
+- Split by item
+- Apple Cash integration
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Requirements
 
@@ -199,20 +302,21 @@ Run on an iPhone simulator or physical device.
 
 ---
 
-## 📖 Learning Goals
+## Learning Goals
 
 This project demonstrates:
-
-- SwiftUI Navigation
-- SwiftData Relationships
+- SwiftUI NavigationStack
+- SwiftData
 - CRUD Operations
-- MVVM-inspired Architecture
+- MVVM-inspired architecture
 - Reusable Components
-- Custom Business Logic
-- State Management
-- Modern iOS Design
+- Swift Charts
+- PDF generation
+- OCR using Vision
+- Photos Picker
+- Haptic Feedback
+- Modern iOS UI Design
 
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
